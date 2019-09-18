@@ -1,10 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
+import 'bootstrap/dist/css/bootstrap.css';
 import * as serviceWorker from './serviceWorker';
+import { Provider } from 'react-redux';
+import store from './store/store';
+import { byRatings } from './actions/actions';
+console.log(process.env.REACT_APP_FIGURES_API_URL); //check local env
 
-ReactDOM.render(<App />, document.getElementById('root'));
+store.dispatch(byRatings());
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />{' '}
+  </Provider>,
+  document.getElementById('root')
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
