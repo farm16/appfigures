@@ -24,16 +24,14 @@ export const byDefault = () => dispatch => {
     });
 };
 
-export const byRatings = () => dispatch => {
+export const getAllRatings = () => dispatch => {
   axios
-    .get(
-      `${process.env.REACT_APP_FIGURES_API_URL}?q=love&rating=4,5&sort=-date`
-    )
+    .get(`${process.env.REACT_APP_FIGURES_API_URL}`)
     .then(res => {
       console.log(res);
       dispatch({
         type: ActionTypes.GET_REVIEWS,
-        payload: res.data
+        payload: res.data.reviews
       });
     })
     .catch(err => {

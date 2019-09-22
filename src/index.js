@@ -5,10 +5,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 import store from './store/store';
-import { byRatings } from './actions/actions';
+import { getAllRatings } from './actions/actions';
 console.log(process.env.REACT_APP_FIGURES_API_URL); //check local env
 
-store.dispatch(byRatings());
+store.dispatch(getAllRatings()); //get initial rattings (all)
 
 ReactDOM.render(
   <Provider store={store}>

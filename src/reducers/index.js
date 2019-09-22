@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
 import reviews from './reviews';
-import error from './error';
+import errors from './error';
 
-export default combineReducers({ reviews, error });
+export default combineReducers({ reviews, errors });
