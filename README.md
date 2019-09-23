@@ -16,5 +16,6 @@ example using linux commands (I am a linux guy)
 
 export URL=http.....
 `➜ appfigures git:(master) export URL=https://yourEndPointHere`
+
 test your local env
 `➜ appfigures git:(master) echo -n $URL https://yourEndPointHere%`
