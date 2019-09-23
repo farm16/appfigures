@@ -1,5 +1,9 @@
 # AppFigures
-Of course, many improvements could be implemented, especially after adding redux (which will make it easy to do so). To run the application please set a local variable in your computer to point the URL.
+Of course, many improvements could be implemented, especially after adding redux (which will make it easy to do so).
+- For UI/UX I used combination of Bootstrap and MaterialUI.
+- For the application's state I used Redux and Hooks !!!
+
+To run the application please set a local variable in your computer to point the URL.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -24,7 +28,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
 
-Libaries used :
+Libraries used :
   ` "@material-ui/core": "^4.4.2",
     "@material-ui/icons": "^4.4.1",
     "@material-ui/lab": "^4.0.0-alpha.26",
