@@ -7,6 +7,7 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
   root: {
+    backgroundColor: '#A0C9D9',
     display: 'flex'
   },
   toolbar: theme.mixins.toolbar,
@@ -15,9 +16,7 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(0),
-
-    height: '100vh'
+    padding: theme.spacing(0)
   }
 }));
 

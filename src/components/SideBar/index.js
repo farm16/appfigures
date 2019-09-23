@@ -1,5 +1,9 @@
-import React from 'react';
-import Stars from '../Stars';
+import React, { useEffect, useState } from 'react';
+import Emojify from 'react-emojione';
+import { time, translation, country } from '../../data/filters';
+import { getQueriedData } from '../../actions/actions';
+import { connect } from 'react-redux';
+import useDebounce from '../../tools/useDebounce';
 //material UI components
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -8,73 +12,21 @@ import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-
-import Arrow from '@material-ui/icons/ArrowBack';
-import MenuIcon from '@material-ui/icons/Menu';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import Toolbar from '@material-ui/core/Toolbar';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Emojify from 'react-emojione';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+//material UI icons
+import Star from '@material-ui/icons/Star';
+import StarBorder from '@material-ui/icons/StarBorder';
+import Arrow from '@material-ui/icons/ArrowBack';
+import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
+//component id generator
 const shortid = require('shortid');
-// import clsx from 'clsx';
-
 const drawerWidth = 290;
-
-const translation = [
-  {
-    value: 'Na',
-    label: 'NONE'
-  },
-  {
-    value: 'US',
-    label: 'United States'
-  }
-];
-
-const country = [
-  {
-    value: 'US',
-    label: 'United States',
-    imoji: ':flag_us:'
-  },
-  {
-    value: 'ES',
-    label: 'United Kingdom',
-    imoji: ':flag_gb:'
-  },
-  {
-    value: 'CA',
-    label: 'Canada',
-    imoji: ':flag_ca:'
-  },
-  {
-    value: 'DE',
-    label: 'Germany',
-    imoji: ':flag_de:'
-  },
-  {
-    value: 'JP',
-    label: 'Japan',
-    imoji: ':flag_jp:'
-  },
-  {
-    value: 'ES',
-    label: 'Spain',
-    imoji: ':flag_es:'
-  },
-  {
-    value: 'BR',
-    label: 'Brazil',
-    imoji: ':flag_br:'
-  },
-  {
-    value: 'FR',
-    label: 'France',
-    imoji: ':flag_fr:'
-  }
-];
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex'
@@ -118,25 +70,52 @@ const useStyles = makeStyles(theme => ({
     float: 'left'
   }
 }));
-
-function SideBar(props) {
-  const { container } = props;
+//main func
+function SideBar({ container, getQueriedData, reviews }) {
+  console.log(reviews);
   const classes = useStyles();
   const theme = useTheme();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [values, setValues] = React.useState({
-    currency: 'EUR'
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [values, setValues] = useState({
+    text: '',
+    country: '',
+    time: '',
+    translation: '',
+    stars: 0
   });
-
-  const handleChange = name => e => {
-    setValues({ ...values, [name]: e.target.value });
-    console.log(e.target.value);
-  };
+  const resetValues = () =>
+    setValues({ text: '', country: '', time: '', stars: 0, translation: '' });
+  const debouncedSearchValue = useDebounce(values, 500);
 
   function handleDrawerToggle() {
     setMobileOpen(!mobileOpen);
   }
-
+  const handleChange = name => e => {
+    setValues({ ...values, [name]: e.target.value });
+    console.log(values);
+  };
+  function starIcons() {
+    let stars = [];
+    for (let i = 1; i < 6; i++) {
+      stars.push(
+        <FormControlLabel
+          key={shortid.generate()}
+          style={{ width: '20%', margin: 0, padding: 0 }}
+          control={
+            <Checkbox
+              className="m-auto"
+              onChange={handleChange('stars')}
+              checked={values.stars >= i ? true : false}
+              icon={<StarBorder />}
+              checkedIcon={<Star />}
+              value={i}
+            />
+          }
+        />
+      );
+    }
+    return stars;
+  }
   const drawer = (
     <div>
       <IconButton
@@ -149,15 +128,24 @@ function SideBar(props) {
       </IconButton>
       <div className={classes.toolbar} />{' '}
       <List>
+        <ListItem>
+          <h2
+            style={{ color: '#1A1626' }}
+            className="font-weight-bold text-center w-100">
+            {reviews.length > 0 ? reviews[0].product_name : 'loading...'}{' '}
+          </h2>
+        </ListItem>
+      </List>
+      <List>
         <ListItem className="my-3">
           <TextField
-            id="outlined-adornment-weight"
-            // className={clsx(classes.margin, classes.textField)}
+            id="searchText"
             variant="outlined"
             className="m-auto w-100"
             label="Search Text"
-            value={values.weight}
-            onChange={handleChange('weight')}
+            type="text"
+            value={values.text}
+            onChange={handleChange('text')}
             InputProps={{
               endAdornment: <SearchIcon className="m-2" />
             }}
@@ -165,17 +153,17 @@ function SideBar(props) {
         </ListItem>
         <ListItem className="my-3" button key={shortid.generate()}>
           <TextField
-            id="filled-select-currency"
-            select
-            label="Country"
+            id="filled-select-country"
+            variant="outlined"
             className="m-auto w-100 "
-            value={values.currency}
-            onChange={handleChange('currency')}
-            variant="outlined">
+            select
+            label="Select Country"
+            value={values.country}
+            onChange={handleChange('country')}>
             {country.map(option => (
               <MenuItem key={shortid.generate()} value={option.value}>
                 <Emojify>
-                  <span> {option.imoji}</span>
+                  <span> {option.emoji}</span>
                 </Emojify>{' '}
                 {option.label}
               </MenuItem>
@@ -184,24 +172,41 @@ function SideBar(props) {
         </ListItem>
         <ListItem className="my-3" button key={shortid.generate()}>
           <TextField
-            id="filled-select-currency"
+            id="filled-select-time"
             select
             label="Time"
             className="m-auto w-100 text-white"
-            value={values.currency}
-            onChange={handleChange('currency')}
+            value={values.time}
+            onChange={handleChange('time')}
             variant="outlined">
-            <MenuItem>10</MenuItem>
+            {time.map(option => (
+              <MenuItem key={shortid.generate()} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
           </TextField>
         </ListItem>
-
         <ListItem button key={shortid.generate()}>
-          <Stars />
+          <div className="constainer p-0 m-0 w-100">
+            <div className="row m-auto my-0 py-0">
+              <p className="p-0 m-0 text-muted">Filter by Rating</p>
+            </div>
+            <div className="row"> {starIcons()}</div>
+          </div>
+        </ListItem>
+        <ListItem button key={shortid.generate()}>
+          <button
+            className="btn btn-sm btn-outline-secondary"
+            onClick={resetValues}>
+            Reset
+          </button>
         </ListItem>
       </List>
     </div>
   );
-
+  useEffect(() => {
+    getQueriedData(debouncedSearchValue);
+  }, [debouncedSearchValue, getQueriedData]);
   return (
     <React.Fragment>
       <CssBaseline />
@@ -216,32 +221,26 @@ function SideBar(props) {
             <MenuIcon />
           </IconButton>
           <TextField
-            className="m-md-auto m-1"
-            id="filled-select-currency-native"
+            id="filled-select-Translation"
+            className="m-auto w-25 text-white"
             select
-            value={values.currency}
-            onChange={handleChange('currency')}
-            SelectProps={{
-              native: true,
-              MenuProps: {
-                className: classes.menu
-              }
-            }}
             label="Translation"
+            value={values.translation}
+            onChange={handleChange('translation')}
             margin="dense"
-            variant="filled">
+            variant="outlined">
             {translation.map(option => (
-              <option key={option.value} value={option.value}>
+              <MenuItem key={shortid.generate()} value={option.value}>
                 {option.label}
-              </option>
+              </MenuItem>
             ))}
           </TextField>{' '}
-          <TextField
+          {/* <TextField
             className="m-md-auto m-1"
             id="filled-select-currency-native"
             select
-            value={values.currency}
-            onChange={handleChange('currency')}
+            // value={values.currency}
+            // onChange={handleChange('currency')}
             SelectProps={{
               native: true,
               MenuProps: {
@@ -256,7 +255,7 @@ function SideBar(props) {
                 {option.label}
               </option>
             ))}
-          </TextField>
+          </TextField> */}
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">
@@ -292,4 +291,11 @@ function SideBar(props) {
   );
 }
 
-export default SideBar;
+const mapStateToProps = state => ({
+  reviews: state.reviews,
+  errors: state.errors
+});
+export default connect(
+  mapStateToProps,
+  { getQueriedData }
+)(SideBar);
