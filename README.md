@@ -1,6 +1,10 @@
+# AppFigures
+Ofcourse there are many improventment that could be implemented, specially after adding redux (which will make it easyto do so). 
+To run the application please set a local variable in your computer to point the URL.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Set Local Envs 
+## Set Local Envs example
 - examples are done using linux terminal commands (I am a linux guy)
 
 export variable $URL :
