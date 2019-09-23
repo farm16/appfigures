@@ -75,7 +75,7 @@ function SingleReview({ reviews, errors }) {
             </div>
           </div>
         ))}
-      </div>
+      </div>{' '}
     </div>
   );
 }

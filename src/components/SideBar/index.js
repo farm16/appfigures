@@ -81,10 +81,18 @@ function SideBar({ container, getQueriedData, reviews }) {
     country: '',
     time: '',
     translation: '',
+    loadSize: 25,
     stars: 0
   });
   const resetValues = () =>
-    setValues({ text: '', country: '', time: '', stars: 0, translation: '' });
+    setValues({
+      loadSize: 25,
+      text: '',
+      country: '',
+      time: '',
+      stars: 0,
+      translation: ''
+    });
   const debouncedSearchValue = useDebounce(values, 500);
 
   function handleDrawerToggle() {
@@ -93,6 +101,10 @@ function SideBar({ container, getQueriedData, reviews }) {
   const handleChange = name => e => {
     setValues({ ...values, [name]: e.target.value });
     console.log(values);
+  };
+  const handleLoadSize = name => e => {
+    let count = values.loadSize + 25;
+    setValues({ ...values, [name]: count });
   };
   function starIcons() {
     let stars = [];
@@ -195,11 +207,19 @@ function SideBar({ container, getQueriedData, reviews }) {
           </div>
         </ListItem>
         <ListItem button key={shortid.generate()}>
-          <button
-            className="btn btn-sm btn-outline-secondary"
-            onClick={resetValues}>
-            Reset
-          </button>
+          <div className="constainer p-0 m-0 w-100">
+            {' '}
+            <button
+              className="btn btn-sm btn-outline-secondary float-left"
+              onClick={resetValues}>
+              Reset
+            </button>
+            <button
+              className="btn btn-sm btn-success  float-right"
+              onClick={handleLoadSize('loadSize')}>
+              Load More
+            </button>
+          </div>
         </ListItem>
       </List>
     </div>

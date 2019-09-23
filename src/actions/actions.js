@@ -7,6 +7,9 @@ const dateTime = new Date();
 
 export const getQueriedData = data => dispatch => {
   let query = [];
+  if (data.loadSize !== 25) {
+    query.push(`count=${data.loadSize}&`);
+  }
   if (data.text !== '') {
     query.push(`q=${data.text}&`);
   }
