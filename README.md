@@ -21,6 +21,9 @@ test your local env (should output the url of the endpoint) :
 In the project directory, you can run:
 
 ### `npm start`
+but don't forget to do a 
+### `yarn`
+before running the app
 
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
